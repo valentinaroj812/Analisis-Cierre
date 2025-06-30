@@ -8,7 +8,7 @@ Esta aplicación permite subir un archivo Excel con datos de cierres y analizar:
 
 ## Cómo usar
 
-1. Clona este repositorio.
+1. Clona este repositorio o descarga el ZIP.
 2. Instala dependencias:
    ```
    pip install -r requirements.txt
@@ -17,5 +17,3 @@ Esta aplicación permite subir un archivo Excel con datos de cierres y analizar:
    ```
    streamlit run app.py
    ```
-
-Sube un archivo Excel estructurado como el ejemplo para comenzar.

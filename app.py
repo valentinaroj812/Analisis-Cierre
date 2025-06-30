@@ -7,14 +7,21 @@ st.title("Análisis de Cierres por Oficina")
 uploaded_file = st.file_uploader("Sube el archivo Excel", type=["xlsx"])
 
 if uploaded_file:
-    df = pd.read_excel(uploaded_file, sheet_name=0, skiprows=1)
+    df_raw = pd.read_excel(uploaded_file, sheet_name=0, header=None)
 
-    df.columns = df.iloc[0]
-    df = df[1:]
+    # Buscar la fila donde está el encabezado
+    header_row = df_raw[df_raw.apply(lambda row: row.astype(str).str.contains('Fecha Cierre').any(), axis=1)].index[0]
 
+    # Leer el archivo nuevamente con la fila correcta como encabezado
+    df = pd.read_excel(uploaded_file, sheet_name=0, header=header_row)
+
+    if 'Fecha Cierre' not in df.columns:
+        st.error("No se encontró la columna 'Fecha Cierre'. Verifica que tu archivo tenga ese encabezado.")
+        st.stop()
+
+    # Procesamiento de datos
     df['Fecha Cierre'] = pd.to_datetime(df['Fecha Cierre'], errors='coerce')
     df['Precio Cierre'] = df['Precio Cierre'].replace('[\$,]', '', regex=True).astype(float)
-
     df = df.dropna(subset=['Fecha Cierre', 'Precio Cierre', 'Asesor Colocador'])
 
     df['Mes'] = df['Fecha Cierre'].dt.month
